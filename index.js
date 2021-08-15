@@ -106,7 +106,7 @@ function populate(data, unit){
         const div = document.querySelector(".js-low-high");
         min = value["daily"][0]["temp"]["min"]
         max = value["daily"][0]["temp"]["max"] 
-        div.textContent = `L:${min} ${unitSymb} H:${max} ${unitSymb}`;
+        div.textContent = `L:${Math.round(min)} ${unitSymb} H:${Math.round(max)} ${unitSymb}`;
     });
 
     /* ---- NOW DO CARDS ---- */
@@ -295,7 +295,7 @@ formSub.addEventListener("submit", (event)=>{
     let inText = inputText.value
     cityDiv.textContent = inText; 
     let compText = (hasWhiteSpace(inText) ? inText.replace(" ", "%20") : inText)
-    let data = getDataJson(compText, unit)
+    let data = getDataJson(compText, unit);
     populate(data, unit);
     Promise.resolve(data)
     .then(function(value){
