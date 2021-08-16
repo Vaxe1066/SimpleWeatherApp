@@ -21,7 +21,8 @@ async function getDataJson(city, units) {
         //console.log(dataJson["main"]["temp"])
         return newDataJson;
     } catch(error){
-        return error;
+        //return error;
+        alert("Please try again - Enter Valide Location");
     }
 }
 
@@ -74,9 +75,14 @@ function populate(data, unit){
     //icon image of weather
     Promise.resolve(data)
     .then(function(value){
-        icon = `http://openweathermap.org/img/wn/${value["current"]["weather"][0]["icon"]}@2x.png`;
-        const iconEl = document.querySelector(".js-Weather-icon");
-        iconEl.src=icon  
+        try{
+            icon = `http://openweathermap.org/img/wn/${value["current"]["weather"][0]["icon"]}@2x.png`;
+            const iconEl = document.querySelector(".js-Weather-icon");
+            iconEl.src=icon  
+        } catch(error){
+            console.log(error)
+        }
+
     });
 
 
@@ -86,27 +92,46 @@ function populate(data, unit){
     // weather description short
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-short-desc");
-        text = value["current"]["weather"][0]["description"] 
-        div.textContent = text;
+        try{
+            const div = document.querySelector(".js-short-desc");
+            text = value["current"]["weather"][0]["description"] 
+            const words = text.split(' ');
+            text="";
+            for(let element of words){
+                text+=(element.charAt(0).toUpperCase() + element.slice(1) + " ");
+            }
+            div.textContent = text;
+        } catch(error){
+            console.log(error);
+        }
     });
 
     //temp now 
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-temp-now");
-        text = value["current"]["temp"] 
-        div.textContent = text + unitSymb;
+        try{
+            const div = document.querySelector(".js-temp-now");
+            text = value["current"]["temp"] 
+            div.textContent = text + unitSymb;
+        } catch(error){
+            console.log(error);
+        }
+
 
     });
 
     // high and low
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-low-high");
-        min = value["daily"][0]["temp"]["min"]
-        max = value["daily"][0]["temp"]["max"] 
-        div.textContent = `L:${Math.round(min)} ${unitSymb} H:${Math.round(max)} ${unitSymb}`;
+        try{
+            const div = document.querySelector(".js-low-high");
+            min = value["daily"][0]["temp"]["min"]
+            max = value["daily"][0]["temp"]["max"] 
+            div.textContent = `L:${Math.round(min)} ${unitSymb} H:${Math.round(max)} ${unitSymb}`;
+        } catch(error){
+            console.log(error)
+        }
+        
     });
 
     /* ---- NOW DO CARDS ---- */
@@ -115,22 +140,32 @@ function populate(data, unit){
     //Sunrise 
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-sunrise-text");
-        text = value["current"]["sunrise"] 
-        let offset = value["timezone_offset"]
-        let time = getTime(text, offset)
-        div.textContent = time;
+        try{
+            const div = document.querySelector(".js-sunrise-text");
+            text = value["current"]["sunrise"] 
+            let offset = value["timezone_offset"]
+            let time = getTime(text, offset)
+            div.textContent = time;
+        }catch(error){
+            console.log(error);
+        }
+
     });
 
 
     // sunset
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-sunset-text");
-        text = value["current"]["sunset"] 
-        let offset = value["timezone_offset"]
-        let time = getTime(text, offset)
-        div.textContent = time;
+        try{
+            const div = document.querySelector(".js-sunset-text");
+            text = value["current"]["sunset"] 
+            let offset = value["timezone_offset"]
+            let time = getTime(text, offset)
+            div.textContent = time;
+        } catch(error){
+            console.log(error)
+        }
+
     });
 
     //chance of rain
@@ -156,18 +191,29 @@ function populate(data, unit){
 
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-humidity-text");
-        text = value["current"]["humidity"] 
-        div.textContent = text+"%";
+        try{
+            const div = document.querySelector(".js-humidity-text");
+            text = value["current"]["humidity"] 
+            div.textContent = text+"%";
+        }
+        catch(error){
+            console.log(error);
+        }
+
     });
 
     // wind speed
 
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-wind-text");
-        text = value["current"]["wind_speed"] 
-        div.textContent =  Math.round(parseFloat(text)*18/5)+" km/h";
+        try{
+            const div = document.querySelector(".js-wind-text");
+            text = value["current"]["wind_speed"] 
+            div.textContent =  Math.round(parseFloat(text)*18/5)+" km/h";
+        }catch(error){
+            console.log(error);
+        }
+
     });
 
 
@@ -175,9 +221,14 @@ function populate(data, unit){
 
     Promise.resolve(data)
     .then(function(value){
-        const div = document.querySelector(".js-feels-text");
-        text = value["current"]["feels_like"] 
-        div.textContent = text + unitSymb;
+        try{
+            const div = document.querySelector(".js-feels-text");
+            text = value["current"]["feels_like"] 
+            div.textContent = text + unitSymb;
+        }catch(error){
+            console.log(error);
+        }
+
     });
 
     // precipitation
@@ -290,21 +341,32 @@ async function fetchGif(text){
 const formSub = document.querySelector("form");
 formSub.addEventListener("submit", (event)=>{
     //city text 
+    
     const cityDiv = document.querySelector(".city");
     const inputText = document.querySelector(".search");
     let inText = inputText.value
-    cityDiv.textContent = inText; 
+    //cityDiv.textContent = inText; 
     let compText = (hasWhiteSpace(inText) ? inText.replace(" ", "%20") : inText)
     let data = getDataJson(compText, unit);
-    populate(data, unit);
-    Promise.resolve(data)
-    .then(function(value){
-        text = value["current"]["weather"][0]["description"] 
-        return text
-    })
-    .then(function(text){
-        fetchGif(text)
-    });
+    try{
+        populate(data, unit);
+        Promise.resolve(data)
+        .then(function(value){
+            text = value["current"]["weather"][0]["description"] 
+            return text
+        })
+        .then(function(text){
+            fetchGif(text)
+            cityDiv.textContent = (inText.charAt(0).toUpperCase() + inText.slice(1)); 
+        })
+        .catch(function(error){
+            console.log(error)
+        });
+        
+    
+    } catch(error){
+        alert("Please try again - Enter Valide Location");
+    }
 
     
 
